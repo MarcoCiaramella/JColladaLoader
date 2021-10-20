@@ -25,5 +25,6 @@ dependencies {
 ## How to use
 ```java
 ColladaLoader colladaLoader = new ColladaLoader();
+// filename.dae must be placed in the asset folder
 List<Object3DData> object3DDataList = colladaLoader.load(this, "filename.dae");
 ```

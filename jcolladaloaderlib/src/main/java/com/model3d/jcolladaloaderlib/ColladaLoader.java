@@ -43,7 +43,6 @@ import com.model3d.jcolladaloaderlib.loader.SkinLoader;
 import com.model3d.jcolladaloaderlib.model.AnimatedModel;
 import com.model3d.jcolladaloaderlib.model.Element;
 import com.model3d.jcolladaloaderlib.model.Object3DData;
-import com.model3d.jcolladaloaderlib.util.android.ContentUtils;
 import com.model3d.jcolladaloaderlib.util.io.IOUtils;
 import com.model3d.jcolladaloaderlib.util.xml.XmlNode;
 import com.model3d.jcolladaloaderlib.util.xml.XmlParser;
@@ -284,7 +283,7 @@ public final class ColladaLoader {
                             Log.i("ColladaLoaderTask", "Reading texture file... " + textureFile);
 
                             // read texture data
-                            try (InputStream stream = ContentUtils.getInputStream(textureFile)) {
+                            try (InputStream stream = context.getAssets().open(textureFile)) {
 
                                 // read data
                                 element.getMaterial().setTextureData(IOUtils.read(stream));

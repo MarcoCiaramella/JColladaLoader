@@ -25,6 +25,8 @@ dependencies {
 ## How to use
 ```java
 ColladaLoader colladaLoader = new ColladaLoader();
-// filename.dae must be placed in the asset folder
-List<Object3DData> object3DDataList = colladaLoader.load(context, "filename.dae");
+// if filename.dae is placed in the asset folder
+List<Object3DData> object3DDataList = colladaLoader.loadFromAsset(context, "filename.dae");
+// if filename.dae is placed in the external storage (/sdcard/Download/dir/filename.dae)
+List<Object3DData> data = colladaLoader.loadFromExternalStorage(context, "/sdcard/Download/dir", "filename.dae");
 ```

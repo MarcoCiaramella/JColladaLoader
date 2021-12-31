@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         }
         ColladaLoader colladaLoader = new ColladaLoader();
         List<Object3DData> data = colladaLoader.loadFromExternalStorage(this, daeDir, daeFilename);
-        int c = 0;
     }
 
     // Storage Permissions

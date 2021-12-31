@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.github.MarcoCiaramella'
-version = '1.0.2'
+version = '1.0.3'
 
 android {
     compileSdk 30
@@ -45,7 +45,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.MarcoCiaramella'
                 artifactId = 'JColladaLoader'
-                version = '1.0.2'
+                version = '1.0.3'
             }
         }
     }

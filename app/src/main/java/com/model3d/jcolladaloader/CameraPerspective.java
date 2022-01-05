@@ -35,7 +35,7 @@ final class CameraPerspective {
 
     protected void createVpMatrix(){
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, center.x, center.y, center.z, up.x, up.y, up.z);
+        Matrix.setLookAtM(viewMatrix, 0, eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2]);
         // Calculate the projection and view transformation
         Matrix.multiplyMM(vpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
     }

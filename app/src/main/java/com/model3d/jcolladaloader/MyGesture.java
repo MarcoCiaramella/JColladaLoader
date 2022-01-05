@@ -1,12 +1,14 @@
 package com.model3d.jcolladaloader;
 
-import java.util.ArrayList;
+import com.model3d.jcolladaloaderlib.model.Object3DData;
+
+import java.util.List;
 
 class MyGesture implements Gesture {
 
-    private final ArrayList<MeshObj> meshes;
+    private final List<Object3DData> meshes;
 
-    public MyGesture(ArrayList<MeshObj> meshes){
+    public MyGesture(List<Object3DData> meshes){
         this.meshes = meshes;
     }
 
@@ -23,24 +25,29 @@ class MyGesture implements Gesture {
     @Override
     public void onMove(float x, float y, float velX, float velY) {
         if (Math.abs(velX) > Math.abs(velY)) {
-            for (MeshObj mesh : meshes) {
-                mesh.getRotation().y += velX;
+            for (Object3DData mesh : meshes) {
+                float[] rotation = mesh.getRotation();
+                rotation[1] += velX;
+                mesh.setRotation(rotation);
             }
-            //skyBox.getRotation().y += velX;
         }
         else if (Math.abs(velY) > Math.abs(velX)) {
-            for (MeshObj mesh : meshes) {
-                mesh.getRotation().x += velY;
+            for (Object3DData mesh : meshes) {
+                float[] rotation = mesh.getRotation();
+                rotation[0] += velY;
+                mesh.setRotation(rotation);
             }
-            //skyBox.getRotation().x += velY;
         }
     }
 
     @Override
     public void onScale(float scaleFactor) {
-        for (MeshObj mesh : meshes) {
-            float newScale = mesh.getScale() * Math.max(0.1f, Math.min(scaleFactor, 5.0f));
-            mesh.setScale(newScale);
+        for (Object3DData mesh : meshes) {
+            float[] scale = mesh.getScale();
+            scale[0] *= Math.max(0.1f, Math.min(scaleFactor, 5.0f));
+            scale[1] *= Math.max(0.1f, Math.min(scaleFactor, 5.0f));
+            scale[2] *= Math.max(0.1f, Math.min(scaleFactor, 5.0f));
+            mesh.setScale(scale);
         }
     }
 }

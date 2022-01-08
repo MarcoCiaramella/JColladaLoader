@@ -79,7 +79,7 @@ final class MeshShader {
         GLES20.glUniformMatrix4fv(uMVPMatrix, 1, false, mvpMatrix, 0);
         GLES20.glUniform3f(uViewPos, viewPos[0], viewPos[1], viewPos[2]);
         textureIndex = 0;
-        if (mesh.getMaterial().getTextureId() != -1) {
+        if (isTextured()) {
             // textured
             bindTexture(uTexture, mesh.getMaterial().getTextureId());
         }
@@ -180,6 +180,10 @@ final class MeshShader {
         if (location < 0) {
             throw new RuntimeException("Unable to locate '" + label + "' in program");
         }
+    }
+
+    private boolean isTextured(){
+        return mesh.getMaterial().getTextureId() != -1;
     }
 
 }

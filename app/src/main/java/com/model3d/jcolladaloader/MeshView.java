@@ -21,7 +21,6 @@ import javax.microedition.khronos.opengles.GL10;
 public class MeshView extends GLSurfaceView implements GLSurfaceView.Renderer, View.OnTouchListener, ScaleGestureDetector.OnScaleGestureListener  {
 
     private MeshShader meshShader;
-    private final float[] mMatrix = new float[16];
     private final float[] mvpMatrix = new float[16];
     private CameraPerspective cameraPerspective;
     private static final float[] CAMERA_EYE = {0,0,30f};
@@ -73,7 +72,7 @@ public class MeshView extends GLSurfaceView implements GLSurfaceView.Renderer, V
             meshShader.setMesh(mesh);
             meshShader.setMvpMatrix(mvpMatrix);
             meshShader.bindData();
-            GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getIndices().capacity(), GLES20.GL_UNSIGNED_INT, mesh.getIndices());
+            GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getDrawOrder().capacity(), GLES20.GL_UNSIGNED_INT, mesh.getDrawOrder());
             meshShader.unbindData();
         }
     }

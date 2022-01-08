@@ -99,6 +99,8 @@ final class MeshShader {
         GLES20.glDisableVertexAttribArray(aPosition);
         GLES20.glDisableVertexAttribArray(aNormal);
         GLES20.glDisableVertexAttribArray(aColor);
+        GLES20.glDisableVertexAttribArray(aWeights);
+        GLES20.glDisableVertexAttribArray(aJointIndices);
     }
 
     private void bindTexture(int uniform, int texture){

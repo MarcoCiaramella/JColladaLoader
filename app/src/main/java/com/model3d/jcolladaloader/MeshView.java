@@ -68,12 +68,9 @@ public class MeshView extends GLSurfaceView implements GLSurfaceView.Renderer, V
         cameraPerspective.loadVpMatrix();
 
         meshShader.setViewPos(cameraPerspective.getEye());
-        for (MeshObj mesh : meshes) {
-            Matrix.setIdentityM(mMatrix, 0);
-            mesh.doTransformation(mMatrix);
-            Matrix.multiplyMM(mvpMatrix, 0, cameraPerspective.getVpMatrix(), 0, mMatrix, 0);
+        for (Object3DData mesh : meshes) {
+            Matrix.multiplyMM(mvpMatrix, 0, cameraPerspective.getVpMatrix(), 0, mesh.getModelMatrix(), 0);
             meshShader.setMesh(mesh);
-            meshShader.setMMatrix(mMatrix);
             meshShader.setMvpMatrix(mvpMatrix);
             meshShader.bindData();
             GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getIndices().capacity(), GLES20.GL_UNSIGNED_INT, mesh.getIndices());

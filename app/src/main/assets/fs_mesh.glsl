@@ -17,7 +17,7 @@ const vec3 lightSpecularColor = vec3(1.0,1.0,1.0);
 
 
 vec4 getColor(){
-    if (uIsTextured != 0){
+    if (uIsTextured != -1){
         return texture2D(uTexture,vTexCoords);
     }
     return vColor;

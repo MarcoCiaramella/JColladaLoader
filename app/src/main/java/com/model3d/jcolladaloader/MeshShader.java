@@ -3,16 +3,20 @@ package com.model3d.jcolladaloader;
 import android.content.Context;
 import android.opengl.GLES20;
 
+import com.model3d.jcolladaloaderlib.model.AnimatedModel;
+import com.model3d.jcolladaloaderlib.model.Object3DData;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 
 final class MeshShader {
 
-    private float[] mMatrix;
     private float[] mvpMatrix;
     private int textureIndex;
     private final int aPosition;
@@ -23,10 +27,14 @@ final class MeshShader {
     private final int uMVPMatrix;
     private final int uTexture;
     private final int uIsTextured;
-    private MeshDae meshDae;
+    private Object3DData mesh;
     private float[] viewPos;
     private final int uViewPos;
     private final int program;
+    private final int aJointIndices;
+    private final int aWeights;
+    private final int uBindShapeMatrix;
+    private final List<Integer> uJointTransforms;
 
     protected MeshShader(Context context) {
         program = GLES20.glCreateProgram();
@@ -48,6 +56,13 @@ final class MeshShader {
         uTexture = getUniform("uTexture");
         uIsTextured = getUniform("uIsTextured");
         uViewPos = getUniform("uViewPos");
+        aJointIndices = getAttrib("aJointIndices");
+        aWeights = getAttrib("aWeights");
+        uBindShapeMatrix = getUniform("uBindShapeMatrix");
+        uJointTransforms = new ArrayList<>();
+        for (int i = 0; i < ((AnimatedModel) mesh).getJointTransforms().length; i++) {
+            uJointTransforms.add(getUniform("uJointTransforms["+i+"]"));
+        }
     }
 
     protected void bindData() {
@@ -56,16 +71,28 @@ final class MeshShader {
         GLES20.glEnableVertexAttribArray(aNormal);
         GLES20.glEnableVertexAttribArray(aColor);
         GLES20.glEnableVertexAttribArray(aTexCoords);
-        GLES20.glVertexAttribPointer(aPosition, 3, GLES20.GL_FLOAT, false, 0, meshDae.getVertexBuffer());
-        GLES20.glVertexAttribPointer(aNormal, 3, GLES20.GL_FLOAT, false, 0, meshDae.getNormalsBuffer());
-        GLES20.glVertexAttribPointer(aColor, 4, GLES20.GL_FLOAT, false, 0, meshDae.getColorsBuffer());
-        GLES20.glVertexAttribPointer(aTexCoords, 2, GLES20.GL_FLOAT, false, 0, meshDae.getTextureBuffer());
-        GLES20.glUniformMatrix4fv(uMMatrix, 1, false, mMatrix, 0);
+        GLES20.glVertexAttribPointer(aPosition, 3, GLES20.GL_FLOAT, false, 0, mesh.getVertexBuffer());
+        GLES20.glVertexAttribPointer(aNormal, 3, GLES20.GL_FLOAT, false, 0, mesh.getNormalsBuffer());
+        GLES20.glVertexAttribPointer(aColor, 4, GLES20.GL_FLOAT, false, 0, mesh.getColorsBuffer());
+        GLES20.glVertexAttribPointer(aTexCoords, 2, GLES20.GL_FLOAT, false, 0, mesh.getTextureBuffer());
+        GLES20.glUniformMatrix4fv(uMMatrix, 1, false, mesh.getModelMatrix(), 0);
         GLES20.glUniformMatrix4fv(uMVPMatrix, 1, false, mvpMatrix, 0);
         GLES20.glUniform3f(uViewPos, viewPos[0], viewPos[1], viewPos[2]);
         textureIndex = 0;
-        bindTexture(uTexture, meshDae.getTexture());
-        GLES20.glUniform1i(uIsTextured, meshDae.getTexture());
+        if (mesh.getMaterial().getTextureId() != -1) {
+            // textured
+            bindTexture(uTexture, mesh.getMaterial().getTextureId());
+        }
+        else {
+            // untextured
+        }
+        GLES20.glUniform1i(uIsTextured, mesh.getMaterial().getTextureId());
+        GLES20.glVertexAttribPointer(aWeights, 3, GLES20.GL_FLOAT, false, 0, ((AnimatedModel) mesh).getVertexWeights());
+        GLES20.glVertexAttribPointer(aJointIndices, 3, GLES20.GL_FLOAT, false, 0, ((AnimatedModel) mesh).getJointIds());
+        GLES20.glUniformMatrix4fv(uBindShapeMatrix, 1, false, ((AnimatedModel) mesh).getBindShapeMatrix(), 0);
+        for (int i = 0; i < uJointTransforms.size(); i++) {
+            GLES20.glUniformMatrix4fv(uMMatrix, 1, false, ((AnimatedModel) mesh).getJointTransforms()[i], 0);
+        }
     }
 
     protected void unbindData() {
@@ -80,18 +107,13 @@ final class MeshShader {
         GLES20.glUniform1i(uniform, textureIndex++);
     }
 
-    protected MeshShader setMMatrix(float[] mMatrix){
-        this.mMatrix = mMatrix;
-        return this;
-    }
-
     protected MeshShader setMvpMatrix(float[] mvpMatrix){
         this.mvpMatrix = mvpMatrix;
         return this;
     }
 
-    protected MeshShader setMesh(MeshDae meshDae){
-        this.meshDae = meshDae;
+    protected MeshShader setMesh(Object3DData mesh){
+        this.mesh = mesh;
         return this;
     }
 

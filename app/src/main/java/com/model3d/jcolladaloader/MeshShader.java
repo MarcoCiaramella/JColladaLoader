@@ -71,6 +71,8 @@ final class MeshShader {
         GLES20.glEnableVertexAttribArray(aNormal);
         GLES20.glEnableVertexAttribArray(aColor);
         GLES20.glEnableVertexAttribArray(aTexCoords);
+        GLES20.glEnableVertexAttribArray(aWeights);
+        GLES20.glEnableVertexAttribArray(aJointIndices);
         GLES20.glVertexAttribPointer(aPosition, 3, GLES20.GL_FLOAT, false, 0, mesh.getVertexBuffer());
         GLES20.glVertexAttribPointer(aNormal, 3, GLES20.GL_FLOAT, false, 0, mesh.getNormalsBuffer());
         GLES20.glVertexAttribPointer(aColor, 4, GLES20.GL_FLOAT, false, 0, mesh.getColorsBuffer());

@@ -22,31 +22,23 @@ uniform mat4 uJointTransforms[MAX_JOINTS];
 
 
 void main() {
-    /// TODO la normale deve cambiare con l'animazione
-    vNormal = normalize(vec3(uMMatrix * vec4(aNormal, 0.0)));
-    ///
-
 
     vColor = aColor;
     vTexCoords = aTexCoords;
 
     vec4 bindPos = uBindShapeMatrix * aPosition;
+    vec3 bindNorm = mat3(uBindShapeMatrix) * aNormal;
 
     vec4 totalLocalPos = vec4(0.0);
+    vec3 totalLocalNorm = vec3(0.0);
 
-    mat4 jointTransform = uJointTransforms[int(aJointIndices[0])];
-    vec4 posePosition = jointTransform * bindPos;
-    totalLocalPos += posePosition * aWeights[0];
-
-    jointTransform = uJointTransforms[int(aJointIndices[1])];
-    posePosition = jointTransform * bindPos;
-    totalLocalPos += posePosition * aWeights[1];
-
-    jointTransform = uJointTransforms[int(aJointIndices[2])];
-    posePosition = jointTransform * bindPos;
-    totalLocalPos += posePosition * aWeights[2];
+    for (int i = 0; i < 3; i++){
+        totalLocalPos += uJointTransforms[int(aJointIndices[i])] * bindPos * aWeights[i];
+        totalLocalNorm += mat3(uJointTransforms[int(aJointIndices[i])]) * bindNorm * aWeights[i];
+    }
 
     vPosition = uMMatrix * totalLocalPos;
+    vNormal = normalize(mat3(uMMatrix) * totalLocalNorm);
 
     gl_Position = uMVPMatrix * totalLocalPos;
 }

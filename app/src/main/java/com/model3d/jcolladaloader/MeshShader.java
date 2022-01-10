@@ -21,12 +21,10 @@ final class MeshShader {
     private int textureIndex;
     private final int aPosition;
     private final int aNormal;
-    private final int aColor;
     private final int aTexCoords;
     private final int uMMatrix;
     private final int uMVPMatrix;
     private final int uTexture;
-    private final int uIsTextured;
     private Object3DData mesh;
     private float[] viewPos;
     private final int uViewPos;
@@ -49,18 +47,16 @@ final class MeshShader {
         GLES20.glUseProgram(getProgram());
         aPosition = getAttrib("aPosition");
         aNormal = getAttrib("aNormal");
-        aColor = getAttrib("aColor");
         aTexCoords = getAttrib("aTexCoords");
         uMMatrix = getUniform("uMMatrix");
         uMVPMatrix = getUniform("uMVPMatrix");
         uTexture = getUniform("uTexture");
-        uIsTextured = getUniform("uIsTextured");
         uViewPos = getUniform("uViewPos");
         aJointIndices = getAttrib("aJointIndices");
         aWeights = getAttrib("aWeights");
         uBindShapeMatrix = getUniform("uBindShapeMatrix");
         uJointTransforms = new ArrayList<>();
-        for (int i = 0; i < ((AnimatedModel) mesh).getJointTransforms().length; i++) {
+        for (int i = 0; i < 60; i++) {
             uJointTransforms.add(getUniform("uJointTransforms["+i+"]"));
         }
     }
@@ -69,38 +65,28 @@ final class MeshShader {
         GLES20.glUseProgram(getProgram());
         GLES20.glEnableVertexAttribArray(aPosition);
         GLES20.glEnableVertexAttribArray(aNormal);
-        GLES20.glEnableVertexAttribArray(aColor);
         GLES20.glEnableVertexAttribArray(aTexCoords);
         GLES20.glEnableVertexAttribArray(aWeights);
         GLES20.glEnableVertexAttribArray(aJointIndices);
         GLES20.glVertexAttribPointer(aPosition, 3, GLES20.GL_FLOAT, false, 0, mesh.getVertexBuffer());
         GLES20.glVertexAttribPointer(aNormal, 3, GLES20.GL_FLOAT, false, 0, mesh.getNormalsBuffer());
-        GLES20.glVertexAttribPointer(aColor, 4, GLES20.GL_FLOAT, false, 0, mesh.getColorsBuffer());
         GLES20.glVertexAttribPointer(aTexCoords, 2, GLES20.GL_FLOAT, false, 0, mesh.getTextureBuffer());
         GLES20.glUniformMatrix4fv(uMMatrix, 1, false, mesh.getModelMatrix(), 0);
         GLES20.glUniformMatrix4fv(uMVPMatrix, 1, false, mvpMatrix, 0);
         GLES20.glUniform3f(uViewPos, viewPos[0], viewPos[1], viewPos[2]);
         textureIndex = 0;
-        if (isTextured()) {
-            // textured
-            bindTexture(uTexture, mesh.getMaterial().getTextureId());
-        }
-        else {
-            // untextured
-        }
-        GLES20.glUniform1i(uIsTextured, mesh.getMaterial().getTextureId());
+        bindTexture(uTexture, mesh.getMaterial().getTextureId());
         GLES20.glVertexAttribPointer(aWeights, 3, GLES20.GL_FLOAT, false, 0, ((AnimatedModel) mesh).getVertexWeights());
         GLES20.glVertexAttribPointer(aJointIndices, 3, GLES20.GL_FLOAT, false, 0, ((AnimatedModel) mesh).getJointIds());
         GLES20.glUniformMatrix4fv(uBindShapeMatrix, 1, false, ((AnimatedModel) mesh).getBindShapeMatrix(), 0);
-        for (int i = 0; i < uJointTransforms.size(); i++) {
-            GLES20.glUniformMatrix4fv(uMMatrix, 1, false, ((AnimatedModel) mesh).getJointTransforms()[i], 0);
+        for (int i = 0; i < ((AnimatedModel) mesh).getJointTransforms().length; i++) {
+            GLES20.glUniformMatrix4fv(uJointTransforms.get(i), 1, false, ((AnimatedModel) mesh).getJointTransforms()[i], 0);
         }
     }
 
     protected void unbindData() {
         GLES20.glDisableVertexAttribArray(aPosition);
         GLES20.glDisableVertexAttribArray(aNormal);
-        GLES20.glDisableVertexAttribArray(aColor);
         GLES20.glDisableVertexAttribArray(aWeights);
         GLES20.glDisableVertexAttribArray(aJointIndices);
     }
@@ -184,10 +170,6 @@ final class MeshShader {
         if (location < 0) {
             throw new RuntimeException("Unable to locate '" + label + "' in program");
         }
-    }
-
-    private boolean isTextured(){
-        return mesh.getMaterial().getTextureId() != -1;
     }
 
 }

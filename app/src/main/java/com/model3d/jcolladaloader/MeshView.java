@@ -30,9 +30,11 @@ public class MeshView extends GLSurfaceView implements GLSurfaceView.Renderer, V
     private boolean gestureProcessed = false;
     private final ScaleGestureDetector scaleDetector;
     private List<Object3DData> meshes;
+    private final String meshFilename;
 
-    public MeshView(Context context) {
+    public MeshView(Context context, String meshFilename) {
         super(context);
+        this.meshFilename = meshFilename;
         setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE | SYSTEM_UI_FLAG_FULLSCREEN);
         setEGLContextClientVersion(2);
         setRenderer(this);
@@ -48,7 +50,7 @@ public class MeshView extends GLSurfaceView implements GLSurfaceView.Renderer, V
         GLES20.glClearDepthf(1.0f);
 
         cameraPerspective = new CameraPerspective(CAMERA_EYE, CAMERA_CENTER, CAMERA_UP, 1f, 100f);
-        meshes = new ColladaLoader().loadFromAsset(getContext(), "");
+        meshes = new ColladaLoader().loadFromAsset(getContext(), meshFilename);
         gesture = new MyGesture(meshes);
         meshShader = new MeshShader(getContext());
     }

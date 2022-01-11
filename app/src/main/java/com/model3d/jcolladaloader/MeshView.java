@@ -12,6 +12,8 @@ import android.view.View;
 import com.model3d.jcolladaloaderlib.ColladaLoader;
 import com.model3d.jcolladaloaderlib.model.Object3DData;
 
+import java.nio.Buffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +76,10 @@ public class MeshView extends GLSurfaceView implements GLSurfaceView.Renderer, V
             meshShader.setMesh(mesh);
             meshShader.setMvpMatrix(mvpMatrix);
             meshShader.bindData();
-            GLES20.glDrawElements(GLES20.GL_TRIANGLES, mesh.getDrawOrder().capacity(), GLES20.GL_UNSIGNED_INT, mesh.getDrawOrder());
+            for (int i = 0; i < mesh.getElements().size(); i++) {
+                Buffer indices = mesh.getElements().get(i).getIndexBuffer().position(0);
+                GLES20.glDrawElements(GLES20.GL_TRIANGLES, indices.capacity(), GLES20.GL_UNSIGNED_INT, indices);
+            }
             meshShader.unbindData();
         }
     }

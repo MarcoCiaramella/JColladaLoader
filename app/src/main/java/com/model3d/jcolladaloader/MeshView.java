@@ -65,7 +65,7 @@ public class MeshView extends GLSurfaceView implements GLSurfaceView.Renderer, V
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        GLES20.glClearColor(1, 1, 1, 1);
+        GLES20.glClearColor(0, 0, 0, 1);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         cameraPerspective.loadVpMatrix();

@@ -32,7 +32,9 @@ void main() {
 
     for (int i = 0; i < 3; i++){
         int jointIndex = int(aJointIndices[i]);
-        if (jointIndex != -1){
+        // FIXME: capire perché viene aWeights (1,0,0),(1,0,0) ecc e aJointIndices è (-1,0,0), (-1,0,0) ecc
+        //if (jointIndex != -1){
+        if (jointIndex > 0){
             totalLocalPos += uJointTransforms[jointIndex] * bindPos * aWeights[i];
             totalLocalNorm += mat3(uJointTransforms[jointIndex]) * bindNorm * aWeights[i];
         }

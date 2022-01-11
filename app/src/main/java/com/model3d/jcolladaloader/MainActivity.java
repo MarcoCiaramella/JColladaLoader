@@ -25,6 +25,6 @@ public class MainActivity extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(new MeshView(this, "Dae/Tree_frog.dae"));
+        setContentView(new MeshView(this, "Tree_frog.dae"));
     }
 }

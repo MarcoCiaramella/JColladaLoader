@@ -31,8 +31,11 @@ void main() {
     vec3 totalLocalNorm = vec3(0.0);
 
     for (int i = 0; i < 3; i++){
-        totalLocalPos += uJointTransforms[int(aJointIndices[i])] * bindPos * aWeights[i];
-        totalLocalNorm += mat3(uJointTransforms[int(aJointIndices[i])]) * bindNorm * aWeights[i];
+        int jointIndex = int(aJointIndices[i]);
+        if (jointIndex != -1){
+            totalLocalPos += uJointTransforms[jointIndex] * bindPos * aWeights[i];
+            totalLocalNorm += mat3(uJointTransforms[jointIndex]) * bindNorm * aWeights[i];
+        }
     }
 
     vPosition = uMMatrix * totalLocalPos;

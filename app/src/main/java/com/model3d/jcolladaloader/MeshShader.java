@@ -68,16 +68,16 @@ final class MeshShader {
         GLES20.glEnableVertexAttribArray(aTexCoords);
         GLES20.glEnableVertexAttribArray(aWeights);
         GLES20.glEnableVertexAttribArray(aJointIndices);
-        GLES20.glVertexAttribPointer(aPosition, 3, GLES20.GL_FLOAT, false, 0, mesh.getVertexBuffer());
-        GLES20.glVertexAttribPointer(aNormal, 3, GLES20.GL_FLOAT, false, 0, mesh.getNormalsBuffer());
-        GLES20.glVertexAttribPointer(aTexCoords, 2, GLES20.GL_FLOAT, false, 0, mesh.getTextureBuffer());
+        GLES20.glVertexAttribPointer(aPosition, 3, GLES20.GL_FLOAT, false, 0, mesh.getVertexBuffer().position(0));
+        GLES20.glVertexAttribPointer(aNormal, 3, GLES20.GL_FLOAT, false, 0, mesh.getNormalsBuffer().position(0));
+        GLES20.glVertexAttribPointer(aTexCoords, 2, GLES20.GL_FLOAT, false, 0, mesh.getTextureBuffer().position(0));
         GLES20.glUniformMatrix4fv(uMMatrix, 1, false, mesh.getModelMatrix(), 0);
         GLES20.glUniformMatrix4fv(uMVPMatrix, 1, false, mvpMatrix, 0);
         GLES20.glUniform3f(uViewPos, viewPos[0], viewPos[1], viewPos[2]);
         textureIndex = 0;
         bindTexture(uTexture, mesh.getMaterial().getTextureId());
-        GLES20.glVertexAttribPointer(aWeights, 3, GLES20.GL_FLOAT, false, 0, ((AnimatedModel) mesh).getVertexWeights());
-        GLES20.glVertexAttribPointer(aJointIndices, 3, GLES20.GL_FLOAT, false, 0, ((AnimatedModel) mesh).getJointIds());
+        GLES20.glVertexAttribPointer(aWeights, 3, GLES20.GL_FLOAT, false, 0, ((AnimatedModel) mesh).getVertexWeights().position(0));
+        GLES20.glVertexAttribPointer(aJointIndices, 3, GLES20.GL_FLOAT, false, 0, ((AnimatedModel) mesh).getJointIds().position(0));
         GLES20.glUniformMatrix4fv(uBindShapeMatrix, 1, false, ((AnimatedModel) mesh).getBindShapeMatrix(), 0);
         for (int i = 0; i < ((AnimatedModel) mesh).getJointTransforms().length; i++) {
             GLES20.glUniformMatrix4fv(uJointTransforms.get(i), 1, false, ((AnimatedModel) mesh).getJointTransforms()[i], 0);

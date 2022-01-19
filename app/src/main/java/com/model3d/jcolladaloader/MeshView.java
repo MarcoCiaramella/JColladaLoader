@@ -10,6 +10,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 
 import com.model3d.jcolladaloaderlib.ColladaLoader;
+import com.model3d.jcolladaloaderlib.animation.Animator;
 import com.model3d.jcolladaloaderlib.model.Object3DData;
 
 import java.nio.Buffer;
@@ -33,6 +34,7 @@ public class MeshView extends GLSurfaceView implements GLSurfaceView.Renderer, V
     private final ScaleGestureDetector scaleDetector;
     private List<Object3DData> meshes;
     private final String meshFilename;
+    private final Animator animator = new Animator();
 
     public MeshView(Context context, String meshFilename) {
         super(context);
@@ -72,6 +74,7 @@ public class MeshView extends GLSurfaceView implements GLSurfaceView.Renderer, V
 
         meshShader.setViewPos(cameraPerspective.getEye());
         for (Object3DData mesh : meshes) {
+            animator.update(mesh, false);
             Matrix.multiplyMM(mvpMatrix, 0, cameraPerspective.getVpMatrix(), 0, mesh.getModelMatrix(), 0);
             meshShader.setMesh(mesh);
             meshShader.setMvpMatrix(mvpMatrix);

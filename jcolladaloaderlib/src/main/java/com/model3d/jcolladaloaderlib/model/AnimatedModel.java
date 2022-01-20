@@ -58,7 +58,7 @@ public class AnimatedModel extends Object3DData {
     private float[] bindShapeMatrix;
 
     private FloatBuffer jointIds;
-    private FloatBuffer vertexWeigths;
+    private FloatBuffer vertexWeights;
     private Animation animation;
 
     // cache
@@ -124,12 +124,12 @@ public class AnimatedModel extends Object3DData {
     }
 
     public AnimatedModel setVertexWeights(FloatBuffer vertexWeigths) {
-        this.vertexWeigths = vertexWeigths;
+        this.vertexWeights = vertexWeigths;
         return this;
     }
 
     public FloatBuffer getVertexWeights() {
-        return vertexWeigths;
+        return vertexWeights;
     }
 
     public AnimatedModel doAnimation(Animation animation) {

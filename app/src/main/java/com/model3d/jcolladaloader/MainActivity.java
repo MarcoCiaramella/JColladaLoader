@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         catch (NullPointerException ignored){}
 
         GLSurfaceView glSurfaceView = new GLSurfaceView(this);
-        MeshRenderer meshRenderer = new MeshRenderer(this, "Tree_frog.dae");
+        MeshRenderer meshRenderer = new MeshRenderer(this, "Tree.dae");
         glSurfaceView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE | View.SYSTEM_UI_FLAG_FULLSCREEN);
         glSurfaceView.setEGLContextClientVersion(2);
         glSurfaceView.setRenderer(meshRenderer);

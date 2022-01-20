@@ -56,7 +56,7 @@ final class MeshShader {
         aWeights = getAttrib("aWeights");
         uBindShapeMatrix = getUniform("uBindShapeMatrix");
         uJointTransforms = new ArrayList<>();
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i < 120; i++) {
             uJointTransforms.add(getUniform("uJointTransforms["+i+"]"));
         }
     }
@@ -75,12 +75,20 @@ final class MeshShader {
         GLES20.glUniformMatrix4fv(uMVPMatrix, 1, false, mvpMatrix, 0);
         GLES20.glUniform3f(uViewPos, viewPos[0], viewPos[1], viewPos[2]);
         textureIndex = 0;
-        bindTexture(uTexture, mesh.getMaterial().getTextureId());
-        GLES20.glVertexAttribPointer(aWeights, 3, GLES20.GL_FLOAT, false, 0, ((AnimatedModel) mesh).getVertexWeights().position(0));
-        GLES20.glVertexAttribPointer(aJointIndices, 3, GLES20.GL_FLOAT, false, 0, ((AnimatedModel) mesh).getJointIds().position(0));
-        GLES20.glUniformMatrix4fv(uBindShapeMatrix, 1, false, ((AnimatedModel) mesh).getBindShapeMatrix(), 0);
-        for (int i = 0; i < ((AnimatedModel) mesh).getJointTransforms().length; i++) {
-            GLES20.glUniformMatrix4fv(uJointTransforms.get(i), 1, false, ((AnimatedModel) mesh).getJointTransforms()[i], 0);
+
+        // TODO: settare uIsTextured
+        if (mesh.getMaterial().getTextureId() != -1) {
+            bindTexture(uTexture, mesh.getMaterial().getTextureId());
+        }
+
+        // TODO: settare uIsAnimated
+        if (isAnimated()) {
+            GLES20.glVertexAttribPointer(aWeights, 3, GLES20.GL_FLOAT, false, 0, ((AnimatedModel) mesh).getVertexWeights().position(0));
+            GLES20.glVertexAttribPointer(aJointIndices, 3, GLES20.GL_FLOAT, false, 0, ((AnimatedModel) mesh).getJointIds().position(0));
+            GLES20.glUniformMatrix4fv(uBindShapeMatrix, 1, false, ((AnimatedModel) mesh).getBindShapeMatrix(), 0);
+            for (int i = 0; i < ((AnimatedModel) mesh).getJointTransforms().length; i++) {
+                GLES20.glUniformMatrix4fv(uJointTransforms.get(i), 1, false, ((AnimatedModel) mesh).getJointTransforms()[i], 0);
+            }
         }
     }
 
@@ -170,6 +178,10 @@ final class MeshShader {
         if (location < 0) {
             throw new RuntimeException("Unable to locate '" + label + "' in program");
         }
+    }
+
+    private boolean isAnimated(){
+        return ((AnimatedModel) mesh).getVertexWeights() != null && ((AnimatedModel) mesh).getJointIds() != null;
     }
 
 }

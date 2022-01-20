@@ -1,12 +1,21 @@
 package com.model3d.jcolladaloader;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLUtils;
 import android.opengl.Matrix;
+import android.util.Log;
+
 import com.model3d.jcolladaloaderlib.ColladaLoader;
 import com.model3d.jcolladaloaderlib.animation.Animator;
 import com.model3d.jcolladaloaderlib.model.Object3DData;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.Buffer;
 import java.util.List;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -17,7 +26,7 @@ public class MeshRenderer implements GLSurfaceView.Renderer {
     private MeshShader meshShader;
     private final float[] mvpMatrix = new float[16];
     private CameraPerspective cameraPerspective;
-    private static final float[] CAMERA_EYE = {0,0,30f};
+    private static final float[] CAMERA_EYE = {0,0,3f};
     private static final float[] CAMERA_CENTER = {0,0,0};
     private static final float[] CAMERA_UP = {0,1,0};
     private List<Object3DData> meshes;
@@ -38,6 +47,15 @@ public class MeshRenderer implements GLSurfaceView.Renderer {
 
         cameraPerspective = new CameraPerspective(CAMERA_EYE, CAMERA_CENTER, CAMERA_UP, 1f, 100f);
         meshes = new ColladaLoader().loadFromAsset(context, meshFilename);
+        for (Object3DData mesh : meshes) {
+            mesh.setScale(0.02f, 0.02f, 0.02f);
+            if (mesh.getTextureData() != null) {
+                mesh.getMaterial().setTextureId(loadTexture(mesh.getTextureData()));
+            }
+            else {
+                int i = 23;
+            }
+        }
         meshShader = new MeshShader(context);
     }
 
@@ -67,5 +85,31 @@ public class MeshRenderer implements GLSurfaceView.Renderer {
             }
             meshShader.unbindData();
         }
+    }
+
+    private int loadTexture(byte[] textureData) {
+        ByteArrayInputStream textureIs = new ByteArrayInputStream(textureData);
+        final int[] textureHandle = new int[1];
+        GLES20.glGenTextures(1, textureHandle, 0);
+        if (textureHandle[0] == 0) {
+            throw new RuntimeException("Error loading texture.");
+        }
+        final Bitmap bitmap = loadBitmap(textureIs);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+        bitmap.recycle();
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
+        return textureHandle[0];
+    }
+
+    private Bitmap loadBitmap(InputStream is) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+        final Bitmap bitmap = BitmapFactory.decodeStream(is, null, options);
+        if (bitmap == null) {
+            throw new RuntimeException("Error loading bitmap.");
+        }
+        return bitmap;
     }
 }

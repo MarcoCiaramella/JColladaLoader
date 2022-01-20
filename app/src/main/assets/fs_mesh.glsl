@@ -5,6 +5,7 @@ precision highp float;
 
 uniform vec3 uViewPos;
 uniform sampler2D uTexture;
+uniform int uIsTextured;
 varying vec4 vPosition;
 varying vec3 vNormal;
 varying vec2 vTexCoords;
@@ -27,7 +28,13 @@ vec4 calcLight(vec3 normal, vec3 viewDir){
     vec3 lightDir = normalize(-lightDirection);
     float diff = diffuseLighting(normal, lightDir);
     float spec = specularLighting(normal, lightDir, viewDir);
-    vec4 color = texture2D(uTexture,vTexCoords);
+    vec4 color;
+    if (uIsTextured == 1){
+        color = texture2D(uTexture,vTexCoords);
+    }
+    else {
+        color = vec4(1.0, 1.0, 1.0, 1.0);
+    }
     vec4 ambient = vec4(lightAmbientColor, 1.0) * color;
     vec4 diffuse = vec4(lightDiffuseColor * diff, 1.0) * color;
     vec4 specular = vec4(lightSpecularColor * spec, 1.0) * vec4(0.5,0.5,0.5,1.0);

@@ -13,7 +13,6 @@ attribute vec3 aJointIndices;
 attribute vec3 aWeights;
 uniform mat4 uBindShapeMatrix;
 uniform mat4 uJointTransforms[MAX_JOINTS];
-uniform int uIsTextured;
 uniform int uIsAnimated;
 varying vec4 vPosition;
 varying vec3 vNormal;

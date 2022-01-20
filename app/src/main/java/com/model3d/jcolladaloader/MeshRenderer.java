@@ -48,7 +48,7 @@ public class MeshRenderer implements GLSurfaceView.Renderer {
         cameraPerspective = new CameraPerspective(CAMERA_EYE, CAMERA_CENTER, CAMERA_UP, 1f, 100f);
         meshes = new ColladaLoader().loadFromAsset(context, meshFilename);
         for (Object3DData mesh : meshes) {
-            mesh.setScale(0.02f, 0.02f, 0.02f);
+            mesh.setScale(0.2f, 0.2f, 0.2f);
             if (mesh.getTextureData() != null) {
                 mesh.getMaterial().setTextureId(loadTexture(mesh.getTextureData()));
             }

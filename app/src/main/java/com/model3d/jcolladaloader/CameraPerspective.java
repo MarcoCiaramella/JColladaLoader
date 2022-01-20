@@ -44,26 +44,6 @@ final class CameraPerspective {
         return eye;
     }
 
-    protected float[] getUp(){
-        return up;
-    }
-
-    protected float[] getCenter(){
-        return center;
-    }
-
-    protected float getNear(){
-        return near;
-    }
-
-    protected float getFar(){
-        return far;
-    }
-
-    protected float[] getViewMatrix(){
-        return viewMatrix;
-    }
-
     protected float[] getVpMatrix(){
         return vpMatrix;
     }

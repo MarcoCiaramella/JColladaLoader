@@ -33,6 +33,7 @@ public class MeshRenderer implements GLSurfaceView.Renderer {
     private final String meshFilename;
     private final Animator animator = new Animator();
     private final Context context;
+    private final float[] rotation = {0,0,0};
 
     public MeshRenderer(Context context, String meshFilename) {
         this.context = context;
@@ -52,9 +53,6 @@ public class MeshRenderer implements GLSurfaceView.Renderer {
             if (mesh.getTextureData() != null) {
                 mesh.getMaterial().setTextureId(loadTexture(mesh.getTextureData()));
             }
-            else {
-                int i = 23;
-            }
         }
         meshShader = new MeshShader(context);
     }
@@ -73,8 +71,10 @@ public class MeshRenderer implements GLSurfaceView.Renderer {
         cameraPerspective.loadVpMatrix();
 
         meshShader.setViewPos(cameraPerspective.getEye());
+        rotation[1] += 1;
         for (Object3DData mesh : meshes) {
             animator.update(mesh, false);
+            mesh.setRotation(rotation);
             Matrix.multiplyMM(mvpMatrix, 0, cameraPerspective.getVpMatrix(), 0, mesh.getModelMatrix(), 0);
             meshShader.setMesh(mesh);
             meshShader.setMvpMatrix(mvpMatrix);

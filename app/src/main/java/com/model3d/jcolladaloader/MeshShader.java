@@ -21,6 +21,7 @@ final class MeshShader {
     private int textureIndex;
     private final int aPosition;
     private final int aNormal;
+    private final int aColor;
     private final int aTexCoords;
     private final int uMMatrix;
     private final int uMVPMatrix;
@@ -35,6 +36,7 @@ final class MeshShader {
     private final List<Integer> uJointTransforms;
     private final int uIsTextured;
     private final int uIsAnimated;
+    private final int uIsColored;
 
     protected MeshShader(Context context) {
         program = GLES20.glCreateProgram();
@@ -49,6 +51,7 @@ final class MeshShader {
         GLES20.glUseProgram(getProgram());
         aPosition = getAttrib("aPosition");
         aNormal = getAttrib("aNormal");
+        aColor = getAttrib("aColor");
         aTexCoords = getAttrib("aTexCoords");
         uMMatrix = getUniform("uMMatrix");
         uMVPMatrix = getUniform("uMVPMatrix");
@@ -56,6 +59,7 @@ final class MeshShader {
         uViewPos = getUniform("uViewPos");
         uIsTextured = getUniform("uIsTextured");
         uIsAnimated = getUniform("uIsAnimated");
+        uIsColored = getUniform("uIsColored");
         aJointIndices = getAttrib("aJointIndices");
         aWeights = getAttrib("aWeights");
         uBindShapeMatrix = getUniform("uBindShapeMatrix");
@@ -74,6 +78,13 @@ final class MeshShader {
         GLES20.glEnableVertexAttribArray(aJointIndices);
         GLES20.glVertexAttribPointer(aPosition, 3, GLES20.GL_FLOAT, false, 0, mesh.getVertexBuffer().position(0));
         GLES20.glVertexAttribPointer(aNormal, 3, GLES20.GL_FLOAT, false, 0, mesh.getNormalsBuffer().position(0));
+        if (mesh.getColorsBuffer() != null) {
+            GLES20.glUniform1i(uIsColored, 1);
+            GLES20.glVertexAttribPointer(aColor, 4, GLES20.GL_FLOAT, false, 0, mesh.getColorsBuffer().position(0));
+        }
+        else {
+            GLES20.glUniform1i(uIsColored, 0);
+        }
         GLES20.glVertexAttribPointer(aTexCoords, 2, GLES20.GL_FLOAT, false, 0, mesh.getTextureBuffer().position(0));
         GLES20.glUniformMatrix4fv(uMMatrix, 1, false, mesh.getModelMatrix(), 0);
         GLES20.glUniformMatrix4fv(uMVPMatrix, 1, false, mvpMatrix, 0);

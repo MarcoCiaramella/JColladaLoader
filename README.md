@@ -30,3 +30,4 @@ List<Object3DData> object3DDataList = colladaLoader.loadFromAsset(context, "file
 // if filename.dae is placed in the external storage (/sdcard/Download/dir/filename.dae)
 List<Object3DData> data = colladaLoader.loadFromExternalStorage(context, "/sdcard/Download/dir", "filename.dae");
 ```
+You can find a full sample [here](app/src/main)
